@@ -53,15 +53,32 @@ def save_special_format(tables, filenames, folder_path):
     for table, filename in zip(tables, filenames):
         file_path = os.path.join(folder_path, filename)
         with open(file_path, 'w') as f:
-            for i in range(60):
-                f.write(f"p={Press_array[i]}" + "\n")
+            for i in range(len(Press_array)):
+                f.write(f"P={format(Press_array[i], '.2f')}" + "\n")
                 f.write(table[Press_array[i]].to_csv(sep=' ', float_format=f'%.{ACCURACY}f', header=False))
+
+
+def save_cp_spec_format(table, filename, folder_path):
+    """Save tables to text files with special formatting"""
+    # If the folder does not exist, create it
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
     
+    # Save tables to text files with special formatting
+    filename = filename + '.txt'
+    file_path = os.path.join(folder_path, filename)
+    with open(file_path, 'w') as f:
+        for i in range(len(Press_array)):
+            f.write(f"P={format(Press_array[i], '.2f')}" + "\n")
+            f.write("2 5" + "\n" "3 17.4" + "\n" "4 43" + "\n" "5 89" + "\n" "8 450" + "\n" "10 1030" + "\n")
+            f.write(table[Press_array[i]].to_csv(sep=' ', float_format=f'%.{ACCURACY}f', header=False))
+
 
 if __name__ == '__main__':
     if EXCEL or TXT or TXT_1_COLUMN == 1:
-        Press_array = np.arange(0.1, 30.5, 0.1) * 1e6
-        Temp_array = np.arange(14, 401, 1)
+        Press_array = np.arange(0.01, 1.01, 0.01) * 1e6
+        Press_array = np.append(Press_array, np.arange(1.1, 289.1, 0.1) * 1e6)
+        Temp_array = np.arange(14, 17, 1)
         temp_array = np.array([])  # Index array
 
         den_array = np.array([])
@@ -130,8 +147,8 @@ if __name__ == '__main__':
         if not os.path.exists(FOLDER_PATH):
             os.makedirs(FOLDER_PATH)
 
-        tables = [DF_den, DF_Cp, DF_Vis, DF_Cond, DF_z, DF_phase]
-        filenames = ['Den', 'Cp', 'Vis', 'Cond', 'z', 'phase']
+        tables = [DF_den, DF_Vis, DF_Cond, DF_z, DF_phase]
+        filenames = ['Den', 'Vis', 'Cond', 'z', 'phase']
 
         if EXCEL == 1:
             save_excel()
@@ -141,6 +158,7 @@ if __name__ == '__main__':
         if TXT_1_COLUMN == 1:
             TXT_1_COL_FOLDER_PATH = os.path.join(FOLDER_PATH, "txt_1_column")
             save_special_format(tables, filenames, TXT_1_COL_FOLDER_PATH)
+            save_cp_spec_format(DF_Cp, "Cp", TXT_1_COL_FOLDER_PATH)
     else:
         raise ValueError("select type of output file in the settings section")
         
