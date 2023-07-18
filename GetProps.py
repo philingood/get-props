@@ -11,7 +11,7 @@ ACCURACY = 6
 
 # Output format
 FOLDER_PATH = FLUID_NAME  # Output folder name
-EXCEL = 1
+EXCEL = 0
 TXT = 1
 TXT_1_COLUMN = 1
 # ----------------------------------------------------------------------------
@@ -60,7 +60,7 @@ def save_special_format(tables, filenames, folder_path):
 
 if __name__ == '__main__':
     if EXCEL or TXT or TXT_1_COLUMN == 1:
-        Press_array = np.arange(0.1, 30.5, 0.5)
+        Press_array = np.arange(0.1, 30.5, 0.1) * 1e6
         Temp_array = np.arange(14, 401, 1)
         temp_array = np.array([])  # Index array
 
@@ -85,12 +85,12 @@ if __name__ == '__main__':
             np.append(temp_array, Temp_array)
             for temp in range(len(Temp_array)):
                 temp = Temp_array[j]
-                den_array = np.append(den_array, PropsSI('D', 'T', temp, 'P', press*1E6, FLUID_NAME))
-                Cp_array = np.append(Cp_array, PropsSI('CPMASS', 'T', temp, 'P', press*1E6, FLUID_NAME))
-                Vis_array = np.append(Vis_array, PropsSI('VISCOSITY', 'T', temp, 'P', press*1E6, FLUID_NAME))
-                Cond_array = np.append(Cond_array, PropsSI('CONDUCTIVITY', 'T', temp, 'P', press*1E6, FLUID_NAME))
-                phase_array = np.append(phase_array, PropsSI('PHASE', 'T', temp, 'P', press*1E6, FLUID_NAME))
-                z_array = np.append(z_array, PropsSI('Z', 'T', temp, 'P', press*1E6, FLUID_NAME))
+                den_array = np.append(den_array, PropsSI('D', 'T', temp, 'P', press, FLUID_NAME))
+                Cp_array = np.append(Cp_array, PropsSI('CPMASS', 'T', temp, 'P', press, FLUID_NAME))
+                Vis_array = np.append(Vis_array, PropsSI('VISCOSITY', 'T', temp, 'P', press, FLUID_NAME))
+                Cond_array = np.append(Cond_array, PropsSI('CONDUCTIVITY', 'T', temp, 'P', press, FLUID_NAME))
+                phase_array = np.append(phase_array, PropsSI('PHASE', 'T', temp, 'P', press, FLUID_NAME))
+                z_array = np.append(z_array, PropsSI('Z', 'T', temp, 'P', press, FLUID_NAME))
                 j = j+1
             i = i+1
             j = 0
