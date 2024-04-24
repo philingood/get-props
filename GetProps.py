@@ -4,10 +4,10 @@ import pandas as pd
 import os
 
 # -- SETTINGS ----------------------------------------------------------------
-FLUID_NAME = 'Hydrogen'
+FLUID_NAME = "Hydrogen"
 
 # Decimal places
-ACCURACY = 6  
+ACCURACY = 6
 
 # Output format
 FOLDER_PATH = FLUID_NAME  # Output folder name
@@ -23,19 +23,25 @@ def save_tables(tables, filenames, folder_path):
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
 
-    # Saving tables to text files 
-    filenames = [filename + '.txt' for filename in filenames]
+    # Saving tables to text files
+    filenames = [filename + ".txt" for filename in filenames]
     for table, filename in zip(tables, filenames):
         file_path = os.path.join(folder_path, filename)
-        table.to_csv(file_path, index=True, sep=' ',
-                     float_format=f'%.{ACCURACY}f')
-    
+        table.to_csv(file_path, index=True, sep=" ",
+                     float_format=f"%.{ACCURACY}f")
+
 
 def save_excel(folder_path=FOLDER_PATH):
     """Save tables to excel file"""
-    salary_sheets = {'Den': DF_den, 'Cp': DF_Cp, 'Vis': DF_Vis,
-                    'Cond': DF_Cond, 'z': DF_z, 'phase': DF_phase}
-    excel_file_path = os.path.join(folder_path, f'prop_{FLUID_NAME}.xlsx')
+    salary_sheets = {
+        "Den": DF_den,
+        "Cp": DF_Cp,
+        "Vis": DF_Vis,
+        "Cond": DF_Cond,
+        "z": DF_z,
+        "phase": DF_phase,
+    }
+    excel_file_path = os.path.join(folder_path, f"prop_{FLUID_NAME}.xlsx")
     writer = pd.ExcelWriter(excel_file_path, engine=None)
     for sheet_name in salary_sheets.keys():
         salary_sheets[sheet_name].to_excel(writer, sheet_name=sheet_name)
@@ -47,15 +53,19 @@ def save_special_format(tables, filenames, folder_path):
     # If the folder does not exist, create it
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
-    
+
     # Save tables to text files with special formatting
-    filenames = [filename + '.txt' for filename in filenames]
+    filenames = [filename + ".txt" for filename in filenames]
     for table, filename in zip(tables, filenames):
         file_path = os.path.join(folder_path, filename)
-        with open(file_path, 'w') as f:
+        with open(file_path, "w") as f:
             for i in range(len(Press_array)):
                 f.write(f"P={format(Press_array[i], '.2f')}" + "\n")
-                f.write(table[Press_array[i]].to_csv(sep=' ', float_format=f'%.{ACCURACY}f', header=False))
+                f.write(
+                    table[Press_array[i]].to_csv(
+                        sep=" ", float_format=f"%.{ACCURACY}f", header=False
+                    )
+                )
 
 
 def save_cp_spec_format(table, filename, folder_path):
@@ -63,18 +73,29 @@ def save_cp_spec_format(table, filename, folder_path):
     # If the folder does not exist, create it
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
-    
+
     # Save table to text file with special formatting
-    filename = filename + '.txt'
+    filename = filename + ".txt"
     file_path = os.path.join(folder_path, filename)
-    with open(file_path, 'w') as f:
+    with open(file_path, "w") as f:
         for i in range(len(Press_array)):
             f.write(f"P={format(Press_array[i], '.2f')}" + "\n")
-            f.write("2 5" + "\n" "3 17.4" + "\n" "4 43" + "\n" "5 89" + "\n" "8 450" + "\n" "10 1030" + "\n")
-            f.write(table[Press_array[i]].to_csv(sep=' ', float_format=f'%.{ACCURACY}f', header=False))
+            f.write(
+                "2 5" + "\n"
+                "3 17.4" + "\n"
+                "4 43" + "\n"
+                "5 89" + "\n"
+                "8 450" + "\n"
+                "10 1030" + "\n"
+            )
+            f.write(
+                table[Press_array[i]].to_csv(
+                    sep=" ", float_format=f"%.{ACCURACY}f", header=False
+                )
+            )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     if EXCEL or TXT or TXT_1_COLUMN == 1:
         Press_array = np.arange(0.01, 1.01, 0.01) * 1e6
         Press_array = np.append(Press_array, np.arange(1.1, 60.1, 0.1) * 1e6)
@@ -103,14 +124,30 @@ if __name__ == '__main__':
             np.append(temp_array, Temp_array)
             for temp in range(len(Temp_array)):
                 temp = Temp_array[j]
-                den_array = np.append(den_array, PropsSI('D', 'T', temp, 'P', press, FLUID_NAME))
-                Cp_array = np.append(Cp_array, PropsSI('CPMASS', 'T', temp, 'P', press, FLUID_NAME))
-                Vis_array = np.append(Vis_array, PropsSI('VISCOSITY', 'T', temp, 'P', press, FLUID_NAME))
-                Cond_array = np.append(Cond_array, PropsSI('CONDUCTIVITY', 'T', temp, 'P', press, FLUID_NAME))
-                phase_array = np.append(phase_array, PropsSI('PHASE', 'T', temp, 'P', press, FLUID_NAME))
-                z_array = np.append(z_array, PropsSI('Z', 'T', temp, 'P', press, FLUID_NAME))
-                j = j+1
-            i = i+1
+                den_array = np.append(
+                    den_array, PropsSI("D", "T", temp, "P", press, FLUID_NAME)
+                )
+                Cp_array = np.append(
+                    Cp_array, PropsSI("CPMASS", "T", temp,
+                                      "P", press, FLUID_NAME)
+                )
+                Vis_array = np.append(
+                    Vis_array, PropsSI("VISCOSITY", "T", temp,
+                                       "P", press, FLUID_NAME)
+                )
+                Cond_array = np.append(
+                    Cond_array,
+                    PropsSI("CONDUCTIVITY", "T", temp, "P", press, FLUID_NAME),
+                )
+                phase_array = np.append(
+                    phase_array, PropsSI(
+                        "PHASE", "T", temp, "P", press, FLUID_NAME)
+                )
+                z_array = np.append(
+                    z_array, PropsSI("Z", "T", temp, "P", press, FLUID_NAME)
+                )
+                j = j + 1
+            i = i + 1
             j = 0
 
             # Append the press[i] arrays to the general arrays
@@ -129,13 +166,20 @@ if __name__ == '__main__':
             z_array = np.array([])
             phase_array = np.array([])
 
-
-        res_den = den_array_last.reshape(len(Press_array), len(Temp_array)).transpose()
-        res_Cp = Cp_array_last.reshape(len(Press_array), len(Temp_array)).transpose()
-        res_Vis = Vis_array_last.reshape(len(Press_array), len(Temp_array)).transpose()
-        res_Cond = Cond_array_last.reshape(len(Press_array), len(Temp_array)).transpose()
-        res_z = z_array_last.reshape(len(Press_array), len(Temp_array)).transpose()
-        res_phase = phase_array_last.reshape(len(Press_array), len(Temp_array)).transpose()
+        res_den = den_array_last.reshape(
+            len(Press_array), len(Temp_array)).transpose()
+        res_Cp = Cp_array_last.reshape(
+            len(Press_array), len(Temp_array)).transpose()
+        res_Vis = Vis_array_last.reshape(
+            len(Press_array), len(Temp_array)).transpose()
+        res_Cond = Cond_array_last.reshape(
+            len(Press_array), len(Temp_array)
+        ).transpose()
+        res_z = z_array_last.reshape(
+            len(Press_array), len(Temp_array)).transpose()
+        res_phase = phase_array_last.reshape(
+            len(Press_array), len(Temp_array)
+        ).transpose()
 
         # Press_array = [f'p={Press_array[i]}' for i in range(len(Press_array))]
         DF_den = pd.DataFrame(res_den, index=Temp_array, columns=Press_array)
@@ -143,16 +187,17 @@ if __name__ == '__main__':
         DF_Vis = pd.DataFrame(res_Vis, index=Temp_array, columns=Press_array)
         DF_Cond = pd.DataFrame(res_Cond, index=Temp_array, columns=Press_array)
         DF_z = pd.DataFrame(res_z, index=Temp_array, columns=Press_array)
-        DF_phase = pd.DataFrame(res_phase, index=Temp_array, columns=Press_array)
+        DF_phase = pd.DataFrame(
+            res_phase, index=Temp_array, columns=Press_array)
 
         if not os.path.exists(FOLDER_PATH):
             os.makedirs(FOLDER_PATH)
 
         # tables = [DF_den, DF_Cp, DF_Vis, DF_Cond, DF_z, DF_phase]
         # filenames = ['Den', 'Cp', 'Vis', 'Cond', 'z', 'phase']
-        
+
         tables = [DF_den, DF_Vis, DF_Cond, DF_z, DF_phase]
-        filenames = ['Den', 'Vis', 'Cond', 'z', 'phase']
+        filenames = ["Den", "Vis", "Cond", "z", "phase"]
 
         if EXCEL == 1:
             save_excel()
@@ -165,4 +210,3 @@ if __name__ == '__main__':
             save_cp_spec_format(DF_Cp, "Cp", TXT_1_COL_FOLDER_PATH)
     else:
         raise ValueError("select type of output file in the settings section")
-        
